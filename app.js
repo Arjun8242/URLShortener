@@ -38,7 +38,6 @@ const saveLinks=async(links) =>{
 }
 
 const server=createServer(async(req, res) => {
-    console.log(req.url);
      if(req.method === "GET"){
         if(req.url === "/"){
             return serveFile(res, path.join( "public", "index.html"), "text/html");
