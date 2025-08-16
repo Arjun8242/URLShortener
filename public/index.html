@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>URL Shortener</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🔗 URL Shortener</h1>
+
+    <form id="shorten-form">
+        <div class="url-box">
+            <label for="originalUrl"></label>
+            <input type="url" id="originalUrl" name="originalUrl" placeholder="Enter your URL..." required />
+        </div>
+
+      <div class="custom-url-box">
+        <input type="text" id="customId" name="customId" placeholder="Custom short code" />
+      </div>
+
+      <button type="submit" class="btn-random">Shorten</button>
+    </form>
+
+    <div id="result" >
+      <p>Short URL:</p>
+      <a id="shortUrl" href="#" target="_blank"></a>
+      <button id="copyBtn" class="btn-copy">Copy</button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('shorten-form').addEventListener('submit', async(event) => {
+     event.preventDefault();
+      const formData = new FormData(event.target);
+      const originalUrl = formData.get('originalUrl');
+      const customId = formData.get('customId');
+      console.log(originalUrl,customId);
+
+      try {
+        const response=await fetch('/shorten',{
+          method:"POST",
+          headers:{
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            url: originalUrl,
+            short: customId
+          })
+        });
+        if(response.ok){
+          alert("form submitted successfully");
+           const data = await response.json();
+  // Build the full short URL (example: http://localhost:6969/abcd1234)
+  const shortUrl = `${window.location.origin}/${data.shortCode}`;
+
+  // Put it into the <a id="shortUrl">
+  const shortUrlAnchor = document.getElementById('shortUrl');
+  shortUrlAnchor.href = shortUrl;
+  shortUrlAnchor.textContent = shortUrl;
+          event.target.reset();
+        }
+        else{
+          const errorMessage=await response.text();
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    document.getElementById("copyBtn").addEventListener("click", () => {
+  const link = document.getElementById("shortUrl").textContent;
+  navigator.clipboard.writeText(link)
+    .then(() => {
+      document.getElementById("copyBtn").textContent = "Copied!";
+      setTimeout(() => {
+        document.getElementById("copyBtn").textContent = "Copy";
+      }, 1500);
+    });
+});
+  </script>
+</body>
+</html>
