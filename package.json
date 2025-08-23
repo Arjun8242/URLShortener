@@ -4,12 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-   "dev": "node --watch app.js",
-   "start": "node app.js",
+    "dev": "node --watch app.js",
+    "start": "node app.js",
     "type": "module"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
- 
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
